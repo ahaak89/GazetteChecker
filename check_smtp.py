@@ -1,0 +1,22 @@
+import smtplib
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+SMTP_HOST = "mail.smtp2go.com"
+SMTP_PORT = 80
+
+logging.info(f"Attempting to connect to {SMTP_HOST} on port {SMTP_PORT} (timeout is 15 seconds)...")
+try:
+    # We'll add a timeout so it doesn't hang forever
+    with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=15) as connection:
+        logging.info("Connection successful! The server responded.")
+        connection.ehlo() # Greet the server
+        logging.info("Handshake with server successful.")
+
+except TimeoutError:
+    logging.error("FAILURE: Connection timed out. This is strong evidence a firewall is silently blocking the connection.")
+except Exception as e:
+    logging.error(f"FAILURE: An unexpected network error occurred: {e}")
+
+logging.info("Network test finished.")
